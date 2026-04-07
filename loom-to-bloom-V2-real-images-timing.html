@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loom to Bloom — V2-real-images-timing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#532128;--text-gold:#FFF39E;--tx:.45s cubic-bezier(.4,0,.2,1);--to:.32s ease;--tt:.25s ease;}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:'Hahmlet',Georgia,serif;color:var(--text-gold)}
+  #intro{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;overflow:hidden;animation:iOut 0.8s ease forwards 3.5s}
+  @keyframes iOut{to{opacity:0;pointer-events:none}}
+  .intro-collage{position:absolute;inset:0;overflow:hidden;display:grid;gap:4px;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(3,1fr);}
+  .cc{overflow:hidden;position:relative}
+  .cc img{width:100%;height:100%;object-fit:cover;filter:saturate(.78) brightness(.70);transform:scale(1.06)}
+  .tall2{grid-row:span 2}.tall3{grid-row:span 3}.wide2{grid-column:span 2}
+  .intro-overlay{position:absolute;inset:0;background:linear-gradient(155deg,rgba(83,33,34,.20) 0%,rgba(34,0,1,.50) 58%,rgba(16,0,0,.70) 100%);pointer-events:none}
+  .intro-text{position:relative;z-index:2;text-align:center;opacity:0;transform:translateY(16px);animation:iTxt 1s cubic-bezier(.16,1,.3,1) .3s forwards}
+  @keyframes iTxt{to{opacity:1;transform:translateY(0)}}
+  .intro-title{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:clamp(58px,6.2vw,88px);line-height:.95;letter-spacing:-.02em;color:var(--text-gold);text-shadow:0 2px 52px rgba(16,0,0,.95),0 0 90px rgba(16,0,0,.6)}
+  .intro-subtitle{margin-top:13px;font-size:clamp(12px,1.3vw,18px);font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,243,158,.70);line-height:1.4}
+  .var-badge{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:200;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,243,158,.40);opacity:0;animation:bdg .6s ease forwards 4.5s;pointer-events:none;white-space:nowrap;background:rgba(34,0,1,.5);padding:4px 12px;border:1px solid rgba(255,243,158,.12)}
+  @keyframes bdg{to{opacity:1}}
+  #stage{position:fixed;inset:0;display:flex;opacity:0;animation:sReveal .7s ease forwards 4.0s}
+  @keyframes sReveal{to{opacity:1}}
+  .panel{position:relative;flex:1;overflow:hidden;transition:flex var(--tx);cursor:pointer;border-right:1px solid rgba(255,243,158,.05)}
+  .panel:last-child{border-right:none}
+  .panel img.pi{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:filter var(--to),transform var(--tx);transform:scale(1.02)}
+  .ptl{position:absolute;inset:0;background:rgba(51,3,4,.10);transition:background var(--to);z-index:1}
+  .pfg{position:absolute;bottom:0;left:0;right:0;height:38%;background:linear-gradient(to top,rgba(34,0,1,.88) 0%,transparent 100%);z-index:2;transition:opacity var(--to),height var(--tx),background var(--tx)}
+  .plabel{position:absolute;bottom:26px;left:0;right:0;text-align:center;z-index:3;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:700;font-size:clamp(9px,1.05vw,19px);letter-spacing:.04em;color:var(--text-gold);text-transform:uppercase;line-height:1.2;transition:opacity var(--tt),transform var(--tt);padding:0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hc{position:absolute;bottom:0;left:0;width:100%;z-index:4;padding:0 28px 44px;display:flex;flex-direction:column;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity var(--tt) var(--tt)}
+  .hbrand{font-family:'Cormorant Garamond',Georgia,serif;font-weight:700;font-size:clamp(20px,2.2vw,36px);line-height:.95;color:var(--text-gold);letter-spacing:-.02em;text-shadow:0 1px 30px rgba(16,0,0,1);margin-bottom:8px}
+  .hcoll{font-size:clamp(10px,1vw,15px);font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,243,158,.82);margin-bottom:4px;text-shadow:0 1px 22px rgba(16,0,0,1)}
+  .hdes{font-size:clamp(9px,.88vw,13px);font-weight:400;letter-spacing:.14em;color:rgba(255,243,158,.48);text-transform:uppercase;text-shadow:0 1px 22px rgba(16,0,0,1);margin-bottom:20px}
+  .hdiv{width:24px;height:1px;background:rgba(255,243,158,.28);margin-bottom:12px;flex-shrink:0}
+  .hbody{font-size:clamp(9px,.88vw,14px);font-weight:300;line-height:1.75;color:rgba(255,243,158,.68);text-shadow:0 1px 22px rgba(16,0,0,1);max-width:280px}
+  #stage:has(.panel:hover) .panel{flex:.6}
+  #stage:has(.panel:hover) .panel:hover{flex:3}
+  #stage:has(.panel:hover) .panel:not(:hover) .ptl{background:rgba(16,0,0,.54)}
+  #stage:has(.panel:hover) .panel:not(:hover) img.pi{filter:saturate(.28) brightness(.46)}
+  #stage:has(.panel:hover) .panel:not(:hover) .plabel{opacity:0;transform:translateY(5px)}
+  #stage:has(.panel:hover) .panel:not(:hover) .pfg{opacity:.3}
+  .panel:hover img.pi{transform:scale(1)!important;filter:saturate(1.02) brightness(.88)!important}
+  .panel:hover .hc{opacity:1;pointer-events:auto;transition-delay:.12s}
+  .panel:hover .plabel{opacity:0}
+  .panel:hover .pfg{height:62%;background:linear-gradient(to top,rgba(14,2,2,.96) 0%,rgba(34,0,1,.44) 55%,transparent 100%)}
+  #stage::after{content:'';position:fixed;inset:0;z-index:50;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.025;mix-blend-mode:overlay}
+  .hint{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:60;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,243,158,.35);white-space:nowrap;opacity:0;pointer-events:none;animation:hIn 1s ease forwards 5s,hOut 1s ease forwards 9s} @keyframes hIn{to{opacity:1}} @keyframes hOut{to{opacity:0}}
+  
+</style>
+</head>
+<body>
+<div id="intro">
+  <div class="intro-collage">
+    <div class="cc" style="grid-row:1/3"><img src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=400&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=300&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1617627143233-60fad3899916?w=400&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1600429088959-6acef0bcad34?w=300&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1583391733981-8498408ee4b6?w=400&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc" style="grid-row:2/4"><img src="https://images.unsplash.com/photo-1583952108415-af5a8b2e7a5c?w=300&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?w=400&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1623077902226-40c3a91c0e4e?w=300&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1617105011891-9acfdab39888?w=400&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=300&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc" style="grid-row:1/3"><img src="https://images.unsplash.com/photo-1600429088959-6acef0bcad34?w=400&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=300&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1617627143233-60fad3899916?w=400&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1583952108415-af5a8b2e7a5c?w=300&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+    <div class="cc"><img src="https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?w=400&q=80&auto=format" alt="" onerror="this.style.display='none'"></div>
+</div>
+  <div class="intro-overlay"></div>
+  <div class="intro-text">
+    <h1 class="intro-title">Loom to Bloom</h1>
+    <p class="intro-subtitle">Explore Indian Textiles &amp; Designers</p>
+  </div>
+</div>
+<p class="var-badge">V2 — Real panel images, intro 3.5s, hint auto-fades</p>
+<div id="stage">
+  <div class="panel">
+    <img class="pi" src="https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800&q=85&auto=format&fit=crop" alt="" onerror="this.style.display='none'">
+    <div class="ptl"></div><div class="pfg"></div>
+    <div class="plabel">The Vintage Project</div>
+    <div class="hc"><div class="hbrand">Tilla</div><div class="hcoll">The Vintage Project</div><div class="hdes">Aratrik Dev Varman</div><div class="hdiv"></div><p class="hbody">The Vintage Project pays homage to traditional textiles and folk embroideries from the Indian subcontinent by repurposing old pieces collected for their workmanship and heirloom value.</p></div>
+  </div>
+  <div class="panel">
+    <img class="pi" src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800&q=85&auto=format&fit=crop" alt="" onerror="this.style.display='none'">
+    <div class="ptl"></div><div class="pfg"></div>
+    <div class="plabel">Rasa</div>
+    <div class="hc"><div class="hbrand">Injiri</div><div class="hcoll">Rasa</div><div class="hdes">Chinar Farooqui</div><div class="hdiv"></div><p class="hbody">Rasa is a kind of sentiment and the audience gets the sentiment from a piece of creative object. It is an inborn desire of humankind to express the emotions and feelings we get from our daily acts and observation.</p></div>
+  </div>
+  <div class="panel">
+    <img class="pi" src="https://images.unsplash.com/photo-1617627143233-60fad3899916?w=800&q=85&auto=format&fit=crop" alt="" onerror="this.style.display='none'">
+    <div class="ptl"></div><div class="pfg"></div>
+    <div class="plabel">Release 13</div>
+    <div class="hc"><div class="hbrand">Payal Khandwala</div><div class="hcoll">Release 13</div><div class="hdes">Payal Khandwala</div><div class="hdiv"></div><p class="hbody">Our newest release places handwoven silk, our signature textile, at the heart of your wardrobe. Payal reimagines the fabric with versatility in mind, designing pieces that transcend effortlessly across seasons and occasions.</p></div>
+  </div>
+  <div class="panel">
+    <img class="pi" src="https://images.unsplash.com/photo-1623077902226-40c3a91c0e4e?w=800&q=85&auto=format&fit=crop" alt="" onerror="this.style.display='none'">
+    <div class="ptl"></div><div class="pfg"></div>
+    <div class="plabel">Juloos</div>
+    <div class="hc"><div class="hbrand">Torani</div><div class="hcoll">Juloos</div><div class="hdes">Karan Torani</div><div class="hdiv"></div><p class="hbody">Juloos is a celebration of India's multicultural spirit, drawing from festivity, community, and shared joy. The collection feels cinematic and nostalgic, turning moments of togetherness into a rich, expressive fashion story.</p></div>
+  </div>
+  <div class="panel">
+    <img class="pi" src="https://images.unsplash.com/photo-1600429088959-6acef0bcad34?w=800&q=85&auto=format&fit=crop" alt="" onerror="this.style.display='none'">
+    <div class="ptl"></div><div class="pfg"></div>
+    <div class="plabel">Crafts of India 2025</div>
+    <div class="hc"><div class="hbrand">Anita Dongre</div><div class="hcoll">Crafts of India 2025</div><div class="hdes">Anita Dongre</div><div class="hdiv"></div><p class="hbody">Crafts of India 2025 brings together a rich range of Indian textile traditions through handwoven Benarasi silk, Ajrakh hand-block printing, Bandhani, and SEWA hand embroidery — heritage techniques through refined, contemporary silhouettes.</p></div>
+  </div>
+</div>
+<p class="hint">Hover to explore each collection</p>
+</body>
+</html>
